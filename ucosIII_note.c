@@ -21,6 +21,30 @@
   * @retval 
   */
 
+1. 目录与文件
 	
+2. 初识ucosIII
+	(1) 单任务例子
+	
+	(2) 多任务例子
+			创建了消息队列，互斥信号量
 
+3. 临界代码段(critical Section 感觉翻译成<关键区域，关键代码段>更易于理解)
+
+	临界段代码(critical Section)是指那些必须完整连续运行,不可被打断的代码段。
+
+	两种方式：
+		1.关中断
+		
+			OS_CFG_ISR_PosT_DEFERRED_EN 设置为 0(见 os_cfg.h) ,则 μC/OS- III 会采用关中断的方式来保护临界段代码;
+
+			可测量关中断的时间
+				cpu_cfg. h 头文件中的 CPU_CFG_INT_DIS_MEAS_EN 置为 1 来允许该功能
+
+		2.给调度器上锁
+		
+			OS_CFG_ISR_PosT_DEFERRED_EN 设置为 1(见 os_cfg.h) ,则 μC/OS- III 会采用给调度器上锁的方式来保护临界段代码;
+
+			可测量给调度器上锁的时间
+				os_cfg.h 头文件中的 OS_CFG_SCHED_LOCK_TIME_MEAS_EN 置为 1 来允许该功能。
 
