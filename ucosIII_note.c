@@ -89,14 +89,21 @@
 			在初始化时，至少创建2个系统任务(OS_IdleTask()和OS_TickTask()),
 			其他3个系统任务(OS_StatTask(),OS_TmrTask和OS_Task())根据需要选择创建。
 			在os_cfg.h中宏定义配置 
-				OS_CFG_STAT_TASK_EN   可允许OS_StatTask()
-				OS_CFG_TMR_EN         可允许OS_TmrTask()
-				OS_CFG_ISR_POST_DEFERRED_EN 可允许OS_IntQTask()
+				OS_CFG_STAT_TASK_EN   可允许OS_StatTask()     os_cfg.h 
+				OS_CFG_TMR_EN         可允许OS_TmrTask()      os_cfg.h 
+				OS_CFG_ISR_POST_DEFERRED_EN 可允许OS_IntQTask() os_cfg.h 
 
 		1.空闲任务(OS_IdleTask( ) 、os_core.c)
 		（懵懂）2.时钟节拍任务务(OS_TickTask( ) 、os_tick.c)
 		3.统计任务(OS_StatTask( ) 、os_stat.c)
-		4.定时任务
-		5.中断服务管理任务
+		4.定时任务(OS_TmrTask( ) 、os_tmr.c)
+		5.中断服务管理任务(OS_IntQTask()、os_int.c)
 
+5. 任务就绪表
+	 就绪表包括两部分：一个就绪优先级位映射表 OSPrioTbl[],用来标明哪个优先级下有任务就绪;
+			一个就绪任务列表 OSRdyList[],其中包含指向各个就绪任务的指针。
+
+6. 任务调度
+	抢占式调度
+	
 
