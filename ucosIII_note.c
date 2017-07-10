@@ -105,5 +105,28 @@
 
 6. 任务调度
 	抢占式调度
-	
+	调度点(临界点，任务切换点)
+	时间片轮转调度
+		通过OSSchedRoundRobinCfg()来改变默认的时间片长度
+		在运行时，通过OSTaSkTimeQuantaSet()来改变
+
+			1. 任务级调度OSSched()(os_core.c)
+			调度器和任务切换执行期间中断是关掉的,因为必须保证这些操作的不可分割性。
+
+			2. 中断级调度器OSIntExit() (见 OS_core.c)
+			调用OSIntExit()时,中断应该是禁止的。
+
+			3. OS_SchedRoundRobin(OS_RDY_LIST * p_rdy_list)()
+
+		同一优先级下的多个任务，利用时间片轮转法调度
+
+
+
+
+
+
+
+
+
+
 
