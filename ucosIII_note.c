@@ -106,7 +106,7 @@
 6. 任务调度
 	抢占式调度
 	调度点(临界点，任务切换点)
-	时间片轮转调度
+	时间片轮转调度(同一优先级下的多个任务，利用时间片轮转法调度)
 		通过OSSchedRoundRobinCfg()来改变默认的时间片长度
 		在运行时，通过OSTaSkTimeQuantaSet()来改变
 
@@ -125,12 +125,41 @@
 
 	中断级的任务切换由函数 OSIntCtxSw()来实现。
 
+	上述两个函数在 os_cpu_a.asm中
 
+8. 中断管理
+	典型中断服务程序 和 无需内核参与的中断服务程序
 
+		典型中断服务程序：通过调用OSSemPost、OSTaskSemPost、OSFlagPost、
+						OSQPost 或 OSTaskQPost 等“发布”函数向任务发消息或信号
 
+		无需内核参与的中断服务程序：不通过内核函数向任务发送消息，不需要在任务代码中处理
 
+	从中断发送消息的两种处理模式：直接发布 和 延时发布
+	OS_cfg.h  OS_CFG_ISR_POST_DEFERRED_EN    直接发布为0 延时发布为1
 
+		直接发布模式使用关闭中断的方式来保护临界段代码;
+		延迟发布模式使用锁定任务调度器的方式来保护临界段代码。
+		这两个模式的选择取决于应用对中断响应时间和任务响应时间的要求。
 
+9. 任务挂起表（pend lists）
+	任务挂起表管理函数
 
+10. 时间管理
+	OSTimeDly(OS_TICK dly, OS_OPT opt, OS_ERR * p_err)
+		三种模式:相对模式 周期模式 绝对模式
 
+	OSTimeDly(2, 				//在OS_CFG_STAT_TASK_RATE_HZ为1000Hz 任务延时2ms（不精准）
+			  OS_OPT_TIME_DLY,  //相对模式
+			  &err)
+
+			 OS_OPT_TIME_PERIODIC  //周期模式 任务在每次执行后，再过指定的时间间隔，会被再次唤醒
+
+			 OS_OPT_TIME_MATCH  //绝对模式 用于上电后指定的时间执行具体的操作
+
+	OSTimeDlyHMSM(CPU_INT16U hours, CPU_INT16U minutes, CPU_INT16U seconds, CPU_INT32U milli, OS_OPT opt, OS_ERR * p_err)
+
+	第5个参数 OS_OPT_TIME_HMSM_STRICT 检查延时参数有效性 H 0~99 M 0~59 S 0~59 M 0~999
+
+			  OS_OPT_TIME_HMSM_NON_STRICT 任意参数 H 0~999 M 0~9999 S 不超过65535 M 不超过4294967295
 
