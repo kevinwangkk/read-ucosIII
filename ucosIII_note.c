@@ -163,3 +163,80 @@
 
 			  OS_OPT_TIME_HMSM_NON_STRICT 任意参数 H 0~999 M 0~9999 S 不超过65535 M 不超过4294967295
 
+	OSTimeDlyResume(OS_TCB * p_tcb, OS_ERR * p_err)
+	用来唤醒一个被延时的任务
+
+	OSTimeGet(OS_ERR * p_err)  OSTimeSet(OS_TICK ticks, OS_ERR * p_err)
+
+	OSTimeTick(void)
+
+11. 定时器管理
+	OSTmrCreate(OS_TMR * p_tmr, CPU_CHAR * p_name, OS_TICK dly, OS_TICK period, OS_OPT opt, OS_TMR_CALLBACK_PTR p_callback, void * p_callback_arg, OS_ERR * p_err)
+		创建定时器并指定其运行模式
+		参数1：指向定时器的指针
+		参数2：定时器名称 ，ASCII
+		参数3：初始延迟值
+		参数4：重复周期
+		参数5：选项
+				OS_OPT_TMR_ONE_SHOT       The timer counts down only once
+*               OS_OPT_TMR_PERIODIC       The timer counts down and then reloads itself
+				三种模式：单次定时器 无初始延时值的周期定时器 有初始延时值的周期定时器 P171图
+				
+		参数6：指向回调函数的指针  	void MyCallback(OS_TMR *p_tmr, void *p_arg);
+		参数7：回调函数参数
+		
+	OSTmrDel(OS_TMR * p_tmr, OS_ERR * p_err)
+		删除定时器
+	OSTmrRemainGet(OS_TMR * p_tmr, OS_ERR * p_err)
+		获取定时器的剩余时间
+	OSTmrStart(OS_TMR * p_tmr, OS_ERR * p_err)
+		启动（或重新启动）定时器计数
+	OSTmrStateGet(OS_TMR * p_tmr, OS_ERR * p_err)
+		获取当前定时器状态
+	OSTmrStop(OS_TMR * p_tmr, OS_OPT opt, void * p_callback_arg, OS_ERR * p_err)
+		停止计数器计时
+
+12. 资源管理
+	关中断/开中断
+
+	给调度器上锁/开锁
+
+	信号量
+		信号量被用做资源共享时，只有任务才能调用其操作函数，
+		而中断服务程序不能调用其操作函数。
+		当用信号量发信号时，无此限制。
+
+		OSSemCreate(OS_SEM * p_sem, CPU_CHAR * p_name, OS_SEM_CTR cnt, OS_ERR * p_err)
+			建立一个信号量
+		OSSemDel(OS_SEM * p_sem, OS_OPT opt, OS_ERR * p_err)
+			删除一个信号量
+		OSSemPend(OS_SEM * p_sem, OS_TICK timeout, OS_OPT opt, CPU_TS * p_ts, OS_ERR * p_err)
+			等待一个信号量
+			参数1：等待的信号量，该信号量应是已经创建的
+			参数2：以时钟节拍为单位的超时时间，设为0表明该等待永远不会超时
+			参数3：等待方式
+					OS_OPT_PEND_BLOCKING 阻塞型
+					OS_OPT_PEND_NON_BLOCKING 非阻塞型
+					使用信号量来保护共享资源时，不会用到非阻塞型
+		OSSemPendAbort(OS_SEM * p_sem, OS_OPT opt, OS_ERR * p_err)
+			取消等待
+		OSSemPost(OS_SEM * p_sem, OS_OPT opt, OS_ERR * p_err)
+			释放或者发出一个信号量
+			参数1：
+			参数2：OS_OPT_POST_1 //该信号量仅释放给一个单独的任务（使用信号量访问共享资源必用）
+		OSSemSet(OS_SEM * p_sem, OS_SEM_CTR cnt, OS_ERR * p_err)
+			强制设置一个信号量的值
+
+	互斥型信号量（MUTEX）（在抢占式内核中）
+		互斥量的本质：一个具有高优先级的任务H想要访问共享资源，
+					  占有该资源的任务的优先级将被提升至与任务H的一样
+		互斥量与信号量一样，只有任务才能使用（中断服务程序则不行）
+
+
+
+
+
+
+		
+
+		
