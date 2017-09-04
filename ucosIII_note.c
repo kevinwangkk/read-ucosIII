@@ -232,11 +232,22 @@
 					  占有该资源的任务的优先级将被提升至与任务H的一样
 		互斥量与信号量一样，只有任务才能使用（中断服务程序则不行）
 
+		OSMutexCreate(OS_MUTEX * p_mutex, CPU_CHAR * p_name, OS_ERR * p_err)
+			建立一个互斥型信号量
+		OSMutexDel(OS_MUTEX * p_mutex, OS_OPT opt, OS_ERR * p_err)
+			删除一个互斥型信号量
+		OSMutexPend(OS_MUTEX * p_mutex, OS_TICK timeout, OS_OPT opt, CPU_TS * p_ts, OS_ERR * p_err)
+			等待一个互斥型信号量
+		OSMutexPendAbort(OS_MUTEX * p_mutex, OS_OPT opt, OS_ERR * p_err)
+			取消等待
+		OSMutexPost(OS_MUTEX * p_mutex, OS_OPT opt, OS_ERR * p_err)
+			释放或者发布一个互斥型信号量
 
+		互斥量可以避免无界优先级反转
 
+	死锁
 
-
-
-		
+13. 任务同步
+	
 
 		
