@@ -170,7 +170,7 @@
 
 	OSTimeTick(void)
 
-11. 定时器管理
+11. 定时器管理 OSTmr???()
 	OSTmrCreate(OS_TMR * p_tmr, CPU_CHAR * p_name, OS_TICK dly, OS_TICK period, OS_OPT opt, OS_TMR_CALLBACK_PTR p_callback, void * p_callback_arg, OS_ERR * p_err)
 		创建定时器并指定其运行模式
 		参数1：指向定时器的指针
@@ -201,7 +201,7 @@
 
 	给调度器上锁/开锁
 
-	信号量
+	信号量 OSSem???()
 		信号量被用做资源共享时，只有任务才能调用其操作函数，
 		而中断服务程序不能调用其操作函数。
 		当用信号量发信号时，无此限制。
@@ -227,7 +227,7 @@
 		OSSemSet(OS_SEM * p_sem, OS_SEM_CTR cnt, OS_ERR * p_err)
 			强制设置一个信号量的值
 
-	互斥型信号量（MUTEX）（在抢占式内核中）
+	互斥型信号量（MUTEX）（在抢占式内核中）  OSMutex???()
 		互斥量的本质：一个具有高优先级的任务H想要访问共享资源，
 					  占有该资源的任务的优先级将被提升至与任务H的一样
 		互斥量与信号量一样，只有任务才能使用（中断服务程序则不行）
@@ -248,6 +248,77 @@
 	死锁
 
 13. 任务同步
-	
+	信号量
+		信号量被用作任务同步时：
+			任务可以调用所有信号量相关的函数，
+			但是ISR只能调用OSSemPost()函数
+		
+	任务信号量 OSTaskSem???()
+		OSTaskSemPend(OS_TICK timeout, OS_OPT opt, CPU_TS * p_ts, OS_ERR * p_err)
+			等待任务信号量
+		OSTaskSemPendAbort(OS_TCB * p_tcb, OS_OPT opt, OS_ERR * p_err)
+			取消等待任务信号量
+		OSTaskSemPost(OS_TCB * p_tcb, OS_OPT opt, OS_ERR * p_err)
+			发布任务信号量
+		OSTaskSemSet(OS_TCB * p_tcb, OS_SEM_CTR cnt, OS_ERR * p_err)
+			强行设置任务信号量技术
 
+		双向同步
+		
+	事件标志 OSFlag???()
+		OSFlagCreate(OS_FLAG_GRP * p_grp, CPU_CHAR * p_name, OS_FLAGS flags, OS_ERR * p_err)
+			创建事件标志组
+		OSFlagDel(OS_FLAG_GRP * p_grp, OS_OPT opt, OS_ERR * p_err)
+			删除事件标志组
+		OSFlagPend(OS_FLAG_GRP * p_grp, OS_FLAGS flags, OS_TICK timeout, OS_OPT opt, CPU_TS * p_ts, OS_ERR * p_err)
+			等待事件标志
+		OSFlagPendAbort(OS_FLAG_GRP * p_grp, OS_OPT opt, OS_ERR * p_err)
+			取消等待事件标志
+		OSFlagPendGetFlagsRdy(OS_ERR * p_err)
+			获取使任务就绪的事件标志
+		OSFlagPost(OS_FLAG_GRP * p_grp, OS_FLAGS flags, OS_OPT opt, OS_ERR * p_err)
+			向事件标志组发布标志
+
+14. 消息传递
+	中断服务程序只能调用OSQPost()
+	
+	任务内建消息队列 OSTaskQ???()
+		OSTaskQPend(OS_TICK timeout, OS_OPT opt, OS_MSG_SIZE * p_msg_size, CPU_TS * p_ts, OS_ERR * p_err)
+			等待消息
+		OSTaskQPendAbort(OS_TCB * p_tcb, OS_OPT opt, OS_ERR * p_err)
+			取消等待消息
+		OSTaskQPost(OS_TCB * p_tcb, void * p_void, OS_MSG_SIZE msg_size, OS_OPT opt, OS_ERR * p_err)
+			向任务发布一则消息
+		OSTaskQFlush(OS_TCB * p_tcb, OS_ERR * p_err)
+			清空任务的消息队列
+
+	消息队列
+		OSQCreate(OS_Q * p_q, CPU_CHAR * p_name, OS_MSG_QTY max_qty, OS_ERR * p_err)
+			创建一个消息队列
+		OSQDel(OS_Q * p_q, OS_OPT opt, OS_ERR * p_err)
+			删除一个消息队列
+		OSQFlush(OS_Q * p_q, OS_ERR * p_err)
+			清空消息队列
+		OSQPend(OS_Q * p_q, OS_TICK timeout, OS_OPT opt, OS_MSG_SIZE * p_msg_size, CPU_TS * p_ts, OS_ERR * p_err)
+			等待消息
+		OSQPendAbort(OS_Q * p_q, OS_OPT opt, OS_ERR * p_err)
+			取消等待消息
+		OSQPost(OS_Q * p_q, void * p_void, OS_MSG_SIZE msg_size, OS_OPT opt, OS_ERR * p_err)
+			向消息队列发布一则消息
+		
+15. 同时等待多个内核对象
+		仅支持任务同时等待多个信号量和(或)多个消息队列
+		不支持同时等待多个事件标志组或互斥信号量
+
+16. 存储管理
+		OSMemCreate(OS_MEM * p_mem, CPU_CHAR * p_name, void * p_addr, OS_MEM_QTY n_blks, OS_MEM_SIZE blk_size, OS_ERR * p_err)
+			创建存储分区
+		OSMemGet(OS_MEM * p_mem, OS_ERR * p_err)
+			从分区申请一块存储块
+		OSMemPut(OS_MEM * p_mem, void * p_blk, OS_ERR * p_err)
+			将之前申请的存储块归还给分区
+		
+		OSMemCreate()函数仅供任务级的代码调用
+		但OSMemGet()和OSMemPut()可以被ISR调用
+		
 		
